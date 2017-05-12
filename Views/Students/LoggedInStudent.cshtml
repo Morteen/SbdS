@@ -1,0 +1,175 @@
+﻿@model SbdS.Models.ViewModel
+@*if (Model != null) {*@*
+<p>
+    <div id="ShowCourses" class="Mytron"style="margin-top:30px"> 
+   
+
+<table class="table ">
+    <thead>Alle kurs på SbdS</thead>
+    <tr>
+        <th>
+           Kursnavn
+        </th>
+        <th>
+           Dag
+        </th>
+        <th>
+           Instruktør
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var course in Model.CourseList) {
+    <tr>
+        <td>
+            @course.Name
+           
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => course.Day)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => course.Instructor)
+        </td>
+        
+        <td>
+            @Html.ActionLink("Meld på Kurs", "AddToCourse", new { id = course.CourseId })
+        </td>
+    </tr>
+}
+
+</table>
+</div>@*slutt vise kurs div*@
+<div id="MyCourses" class="Mytron">
+    <table class="table ">
+        <thead>Kurs jeg deltar på</thead>
+        <tr>
+            <th>
+                Kursnavn
+            </th>
+            <th>
+                Dag
+            </th>
+            <th>
+                Instruktør
+            </th>
+            <th></th>
+        </tr>
+        @if(Model.UserAtCourseList!=null) { 
+        foreach (var myC in Model.UserAtCourseList)
+        {
+            <tr id="row_@myC.AtCourseId">
+                <td>
+                    @myC.Course.Name
+                 
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => myC.Course.Day)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => myC.Course.Instructor)
+                </td>
+                <td>
+                    
+                    <a href="#"  onclick="ConfirmDelete(@myC.AtCourseId)"><i class="glyphicon glyphicon-trash"style="color:red"></i></a>
+                                                                                                   
+                </td>
+            </tr>
+        }
+        }
+
+    </table>
+
+</div>
+
+    @*}*@
+
+
+    <input type="hidden" id="hiddenApplicationId" />
+    <!--Deletemodal-->
+    <div id="deleteModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Er du sikker på at du vil slutte på dette kurset?</h4>
+
+                    <div style="text-align:center;display:none " id="loaderDiv">
+                        @*<i class="fa fa-spinner" aria-hidden="true"></i>*@
+                        <img src="~/Content/images/slowloader.jpg" />
+                    </div>
+                </div><!--Body-->
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Avbryt</a>
+                    <a href="#" class="btn btn-success" onclick="DeleteUserAt()"> Slett</a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!--Slutt på deletemodal-->
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#MyCourses").hide();
+            $("#ShowCourses").hide();
+
+        })
+
+
+        
+       
+        
+       
+
+
+        function MyCourse() {
+
+            $("#ShowCourses").hide();
+            $("#MyCourses").show();
+        }
+
+
+
+        function Course() {
+
+            $("#ShowCourses").show();
+            $("#MyCourses").hide();
+        }
+
+
+
+        function ConfirmDelete(AtCourseId) {
+            $("#hiddenApplicationId").val(AtCourseId);
+            $("#deleteModal").modal("show");
+        }
+        //Sletter brukere ved kurs
+        function DeleteUserAt() {
+            $("#loaderDiv").show();
+            var CorId = $("#hiddenApplicationId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/UserAtCourses/AtCourseDelete",
+                data: { AtCourseId: CorId },
+                success: function (result) {
+                    $("#loaderDiv").hide();
+                    $("#row_" + CorId).remove();
+                    $("#deleteModal").modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    alert("En feil oppsto ved sletting - " + error);
+                    $("#loaderDiv").hide();
+                    $("#deleteModal").modal('hide');
+                }
+            })
+        }
+    </script>

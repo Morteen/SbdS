@@ -1,0 +1,140 @@
+﻿@model SbdS.Models.ViewModel
+<div id="studentlist"class="Mytron">
+    <p>
+
+        @Html.ActionLink("Legg til ny elev", "Create")
+    </p>
+    <table class="table table">
+        <tr>
+            <th>
+                Fornavn
+            </th>
+            <th>
+                Etternavn
+            </th>
+            <th>
+                Adresse
+            </th>
+            <th>
+                Burkernavn
+            </th>
+            <th>
+                Alder
+            </th>
+            <th>
+                Foresattes navn
+            </th>
+            <th>
+                Passord
+            </th>
+
+            <th>
+                E-mail
+            </th>
+            <th>
+                Har admin rett
+            </th>
+            <th></th>
+        </tr>
+        @if (Model != null)
+        {
+
+            foreach (var student in Model.StudentList)
+            {
+                <tr>
+                    <td>
+                        @student.Fname;
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Lname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Adr)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Age)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.ParentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Password)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.IsAdmin)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = student.StudentId }) |
+                        @Html.ActionLink("Details", "Details", new { id = student.StudentId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = student.StudentId })
+                    </td>
+                </tr>
+            }
+        }
+
+
+    </table>
+</div>@*slutt på studentlist*@
+<div id="courselist"class="Mytron">
+    <table class="table table-responsive ">
+        <thead>Alle kurs ved SbdS</thead>
+        <tr>
+            <td>Kursnavn</td>
+            <td>Dag</td>
+            <td>Instruktør</td>
+            <td></td>
+        </tr>
+        @if (Model != null) { 
+        foreach (var course in Model.CourseList)
+        {
+            <tr id="row_@course.CourseId">
+                <td>@course.Name</td>
+                <td>@course.Day</td>
+                <td>@course.Instructor</td>
+                <td><a href="#" onclick="ConfirmDelete(@course.CourseId)"><i class="glyphicon glyphicon-trash" style="color:red"></i></a></td>
+            </tr>
+
+        }
+        }
+    </table>
+    </div>@*slutt påcourselist*@
+<div id="UsersAtcourselist"class="Mytron">
+    <table class="table ">
+        <thead>Alle elver som deltar på kurs ved SbdS</thead>
+        <tr>
+            <td>Fornavn</td>
+            <td>Etter navn</td>
+            <td>Kurs </td>
+            <td>Har betalt</td>
+            <td></td>
+        </tr>
+        @if (Model != null)
+        {
+            foreach (var UserAt in Model.UserAtCourseList)
+            {
+                <tr id="row_@UserAt.CourseId">
+                    <td>@UserAt.Student.Fname</td>
+                    <td>@UserAt.Student.Lname</td>
+                    <td>@UserAt.Course.Name</td>
+                    <td>
+                        @if (UserAt.IsPayed)
+                    {<i class="glyphicon glyphicon-check" style="color:green"></i> }
+                    else
+                    {<i class="glyphicon glyphicon-hand-up" style="color:red"></i>}
+                </td>
+                    <td><a href="#" onclick="ConfirmDelete(@UserAt.CourseId)"><i class="glyphicon glyphicon-trash" style="color:red"></i></a></td>
+                </tr>
+
+            }
+        }
+    </table>
+</div>@*slutt påUserAtcourselist*@
+
+   

@@ -1,0 +1,239 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+
+
+                @if (Session["UserId"] != null)
+                {
+
+
+                    if (Session["IsAdmin"].Equals("Admin"))
+                    {
+                        <ul class="nav navbar-nav ">
+                            <li>
+                                <a href="#" onclick="Course()">Kursliste </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="Students()" id="showStudent">Elevliste </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="StudensAtCourse()" id="showStudent">Elver på kurs </a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+
+
+                                <a href="#">Hei @Session["UserName"] </a>
+
+                            </li>
+                            <li>
+                                @Html.ActionLink("Logg ut", "LogOut", "Students");
+                            </li>
+
+                        </ul>
+                        //Slutt på Admin delen
+                    }
+                    else
+                    {
+                        <ul class="nav navbar-nav ">
+                            <li>
+                                <a href="#" onclick="Course()">Vis kursliste </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="MyCourse()" id="showCourse">Mine kurs </a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+
+
+                                <a href="#">Hei @Session["UserName"] </a>
+
+                            </li>
+                            <li>
+                                @Html.ActionLink("Logg ut", "LogOut", "Students");
+                            </li>
+
+                        </ul>
+                    }
+                    //Slutt på studentdelen
+
+                }
+                else
+                {<ul class="nav navbar-nav navbar-right">
+                    <li>
+
+                        <a href="#" onclick="Reg()">Registrer </a>
+
+                    </li>
+                    <li>
+                        <a href="#" onclick="Login()">Login </a>
+                    </li>
+
+                </ul>
+                }
+
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>
+                &copy; @DateTime.Now.Year - SbdS Morten Olsen
+            </p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+<div id="LoginModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content"style="background-image: url('../../Content/images/FullSizeRender.jpg');">
+
+            <div class="modal-body">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                @*Legg login her*@
+
+                <div>
+
+                    <form id="myForm1">
+                        @Html.AntiForgeryToken()
+                       
+                       Brukernavn name: <input type="text" name="username"class = "form-control"><br>
+                       Passord: <input type="text" name="password"class = "form-control"><br>
+                       
+                            
+
+
+                        <a href="#" id="btnSubmit" onclick="confirmLogin()" class="btn btn-success ">Login </a>
+
+                    </form>
+
+
+
+
+                    <div style="text-align:center;display:none" id="loaderDiv">
+
+
+
+
+                      
+                        <img src="~/Content/images/slowloader.jpg" />
+
+
+                    </div>
+
+
+
+
+
+
+
+
+                </div>
+
+
+                @*Slutt på login*@
+            </div><!--Body-->
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Avbryt</a>
+               
+</div>
+
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () { })
+
+    function Login(){
+
+        $("#LoginModal").modal("show");
+
+        
+    }
+    
+            
+
+        
+
+    //function ShowRegModal() {
+    //    $("#myRegModal").modal("show");
+    //}
+
+
+
+    function confirmLogin() {
+        var data = $("#myForm1").serialize();
+       
+        $("#loaderDiv").show();
+        $.ajax({
+            type: "POST",
+            url: "/Students/Login",
+            data: data,
+            success: function (result) {       
+                $("#loaderDiv").hide();
+
+                $("#LoginModal").modal("hide");
+                if(result){
+                    window.location.href = "/Students/LoggedInAdmin";
+                } else {
+                    window.location.href = "/Students/LoggedInStudent";
+                }
+
+            },
+            error: function (xhr, status, error) {
+                alert("Passord eller brukernavn er galt - " + error);
+                $("#loaderDiv").hide();
+                $("#LoginModal").modal('hide');
+            }
+
+        })
+
+
+    }
+
+
+    
+
+
+
+
+
+</script>
+

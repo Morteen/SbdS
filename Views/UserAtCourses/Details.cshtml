@@ -1,0 +1,42 @@
+﻿@model SbdS.Models.UserAtCourse
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>UserAtCourse</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Course.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Student.Fname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Student.Fname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPayed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPayed)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.AtCourseId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
