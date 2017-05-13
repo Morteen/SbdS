@@ -277,6 +277,58 @@ namespace SbdS.Controllers
         }
 
 
+        //Asynktest
+        [HttpPost]
+        public JsonResult UsernameTest(string letter)
+        {
+            List<Student> students = db.Students.ToList();
+            foreach (Student i in students)
+            {
+                if (i.Username.Contains(letter))
+                {
+                    return Json(i.Username, JsonRequestBehavior.AllowGet); // yes
+                }
+            }
+            return Json(null, JsonRequestBehavior.AllowGet); // yes
+        }
+
+
+
+        [HttpPost]
+        public JsonResult IsAlreadySigned(string Username)
+        {
+
+            return Json(IsUserAvailable(Username));
+
+        }
+
+
+
+        public bool IsUserAvailable(string Username)
+        {
+             
+            List<Student> Students = db.Students.ToList();
+        
+  var RegUsername=(from u in Students
+                              where u.Username.ToUpper() == Username.ToUpper()
+                              select new { Username }).FirstOrDefault();   
+
+            bool status;
+            if (RegUsername != null)
+            {
+                //Already registered  
+                status = false;
+            }
+            else
+            {
+                //Available to use  
+                status = true;
+            }
+
+            return status;
+        }
+
+
 
 
 

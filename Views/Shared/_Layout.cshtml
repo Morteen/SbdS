@@ -1,4 +1,4 @@
-﻿
+﻿@model SbdS.Models.ViewModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +18,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("SbdS", "Index", "Hjem", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -89,7 +89,7 @@
                 {<ul class="nav navbar-nav navbar-right">
                     <li>
 
-                        <a href="#" onclick="Reg()">Registrer </a>
+                        <a href="#" onclick="ShowRegModal()">Registrer </a>
 
                     </li>
                     <li>
@@ -178,6 +178,137 @@
 
     </div>
 </div>
+
+
+
+ <div id="myRegModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <!--Regform i modal-->
+
+
+                    <h4>Registrer deg ved SbdS.</h4>
+                    <hr />
+
+                    @using (Html.BeginForm("Create","Students",FormMethod.Post,new { id = "myRegForm" })){
+
+      @Html.AntiForgeryToken()
+                         <div class="form-horizontal">
+        
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Fname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*<input class="form-control"" type="text" name="fname" />*@
+                @Html.EditorFor(model => model.Student.Fname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.Fname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Lname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.Lname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.Lname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Adr, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.Adr, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.Adr, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.Username, new { htmlAttributes = new { @class = "form-control", id = "username" } })
+                <div id="status"></div>@Html.ValidationMessageFor(model => model.Student.Username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.Age, new { htmlAttributes = new { @class = "form-control"  } })
+                @Html.ValidationMessageFor(model => model.Student.Age, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.ParentName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.ParentName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.ParentName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Student.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Student.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Student.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Student.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                <a href="#" class="btn btn-default" onclick="confirmReg()">Registrer</a>
+            </div>
+        </div>
+    </div>
+
+
+               
+                    }@*slut på htmlhelper regform*@
+                    <!--Slutt på regform i modal-->
+                </div><!--Body-->
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Avbryt</a>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Slutt på Regmodal-->
+
+
+
+
+
+
+     
+ 
+
+
+
 <script>
     $(document).ready(function () { })
 
@@ -192,9 +323,44 @@
 
         
 
-    //function ShowRegModal() {
-    //    $("#myRegModal").modal("show");
-    //}
+    function ShowRegModal() {
+        $("#myRegModal").modal("show");
+    }
+
+
+    function confirmReg() {
+
+        var data = $("#myRegForm").serialize();
+        alert(data);
+
+        $("#loaderDiv").show();
+        $.ajax({
+            type: "POST",
+            url: "/Students/Create",
+            data: data,
+            success: function (result) {
+                $("#loaderDiv").hide();
+
+                $("#myRegModal").modal("hide");
+                if (result) {
+                   alert("Du er registrert \n Vennligst Login")
+                } 
+
+            },
+            error: function (xhr, status, error) {
+                alert("Her er det noe feil" + error);
+                $("#loaderDiv").hide();
+                $("#myRegModal").modal('hide');
+            }
+
+        })
+
+
+
+
+
+
+    }
 
 
 
@@ -226,7 +392,50 @@
         })
 
 
+
+
+
+
+
+
+
+
+
     }
+
+
+    $("#username").keyup(function () {
+        var username = $("#username").val();
+       
+        $("#status").html("Leter..");
+        if (username != "") {
+            //$("#status").html(data);
+            $.ajax({
+                type: "POST",
+                url: "/Students/UsernameTest",
+                data: username,
+                success: function (result) {
+                    if(result!=null){ 
+                        $("#status").html(result+" er brukt");
+                    } else {
+                        $("#status").html("");
+                    }
+
+                },
+
+                error: function (xhr, status, error) {
+                    alert("Noe er galt " + error);
+                   
+                }
+
+
+            })
+
+
+        }
+        
+
+    });
 
 
     

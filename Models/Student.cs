@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SbdS.Models
 {
@@ -22,6 +23,7 @@ namespace SbdS.Models
         [Display(Name = "Adresse")]
         public string Adr { get; set; }
         [Display(Name = "Brukernavn")]
+        [Remote("IsAlreadySigned", "Students", HttpMethod = "POST", ErrorMessage = "Brukernavnet er opptatt.")]
         public string Username { get; set; }
         [Display(Name = "Alder")]
         public int Age { get; set; }
@@ -36,7 +38,7 @@ namespace SbdS.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         [EmailAddress]
         [Display(Name = "Email")]

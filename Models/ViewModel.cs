@@ -8,6 +8,7 @@ namespace SbdS.Models
     public class ViewModel
     {
         public List<Student> StudentList { get; set; }
+        public Student Student { get; set; }
         public List<Course> CourseList { get; set; }
         public List<UserAtCourse> UserAtCourseList { get; set; }
 
