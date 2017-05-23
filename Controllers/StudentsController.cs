@@ -43,6 +43,7 @@ namespace SbdS.Controllers
             return View();
         }
 
+
         // POST: Students/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -59,6 +60,29 @@ namespace SbdS.Controllers
 
             return View(student);
         }
+        // GET: Students/Create
+        public ActionResult AdminCreate()
+        {
+            return View();
+        }
+
+        // POST: Students/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminCreate([Bind(Include = "StudentId,Fname,Lname,Adr,Username,Age,ParentName,Password,ConfirmPassword,Email,IsAdmin")] Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Students.Add(student);
+                db.SaveChanges();
+                return RedirectToAction(" LoggedInAdmin");
+            }
+
+            return View(student);
+        }
+
 
         // GET: Students/Edit/5
         public ActionResult Edit(int? id)
@@ -91,31 +115,46 @@ namespace SbdS.Controllers
             return View(student);
         }
 
-        // GET: Students/Delete/5
-        public ActionResult Delete(int? id)
+        //// GET: Students/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Student student = db.Students.Find(id);
+        //    if (student == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(student);
+        //}
+
+        //// POST: Students/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Student student = db.Students.Find(id);
+        //    db.Students.Remove(student);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
+        [HttpPost]
+        public JsonResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Student student = db.Students.Find(id);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
+           Student stud = db.Students.Find(id);
+            db.Students.Remove(stud);
+            db.SaveChanges();
+
+            //Check to see if Application was actually deleted
+            if (db.Students.Find(id) == null)
+                return Json(true, JsonRequestBehavior.AllowGet); // yes
+            else
+                return Json(null, JsonRequestBehavior.AllowGet); // no
         }
 
-        // POST: Students/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Student student = db.Students.Find(id);
-            db.Students.Remove(student);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+
 
         protected override void Dispose(bool disposing)
         {
@@ -309,9 +348,8 @@ namespace SbdS.Controllers
              
             List<Student> Students = db.Students.ToList();
         
-  var RegUsername=(from u in Students
-                              where u.Username.ToUpper() == Username.ToUpper()
-                              select new { Username }).FirstOrDefault();   
+  var RegUsername=(from u in Students where u.Username.ToUpper() == Username.ToUpper() select new { Username }).FirstOrDefault();
+
 
             bool status;
             if (RegUsername != null)

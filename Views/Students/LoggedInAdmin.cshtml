@@ -2,7 +2,7 @@
 <div id="studentlist"class="Mytron">
     <p>
 
-        @Html.ActionLink("Legg til ny elev", "Create")
+        @Html.ActionLink("Legg til ny elev", "AdminCreate", "Students")
     </p>
     <table class="table table">
         <tr>
@@ -41,9 +41,9 @@
 
             foreach (var student in Model.StudentList)
             {
-                <tr>
+                <tr id="row_@student.StudentId">
                     <td>
-                        @student.Fname;
+                        @Html.DisplayFor(modelItem => student.Fname)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => student.Lname)
@@ -73,7 +73,7 @@
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = student.StudentId }) |
                         @Html.ActionLink("Details", "Details", new { id = student.StudentId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = student.StudentId })
+                        <a hr="#" class="btn " onclick="ConfirmDelete(@student.StudentId)"><i class="glyphicon glyphicon-trash" style="color:red"></i> </a>
                     </td>
                 </tr>
             }
@@ -82,7 +82,7 @@
 
     </table>
 </div>@*slutt på studentlist*@
-<div id="courselist"class="Mytron">
+<div id="courselist"class="Mytron" style="display: none;margin-top:50px">
     <table class="table table-responsive ">
         <thead>Alle kurs ved SbdS</thead>
         <tr>
@@ -105,7 +105,7 @@
         }
     </table>
     </div>@*slutt påcourselist*@
-<div id="UsersAtcourselist"class="Mytron">
+<div id="UsersAtcourselist"class="Mytron"style="display: none;margin-top:50px">
     <table class="table ">
         <thead>Alle elver som deltar på kurs ved SbdS</thead>
         <tr>
@@ -137,4 +137,87 @@
     </table>
 </div>@*slutt påUserAtcourselist*@
 
+
+
+<input type="hidden" id="hiddenStudentId" />
+<!--Deletemodal-->
+<div id="deleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>Er du sikker på at du vil slette denne eleven?</h4>
+
+                <div style="text-align:center;display:none " id="loaderDiv">
+                    <img src="~/Content/images/slowloader.jpg" />
+                    
+                </div>
+            </div><!--Body-->
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Avbryt</a>
+                <a href="#" class="btn btn-success" onclick="DeleteStudent()"> Slett</a>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!--Slutt på deletemodal-->
+<script>
+    $(document).ready(function () {})
+
+    function ConfirmDelete (StudentId) {
+        $("#hiddenStudentId").val(StudentId);
+        $("#deleteModal").modal("show");
+    }
+
+    function DeleteStudent() {
+        $("#loaderDiv").show();
+        var StudId = $("#hiddenStudentId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Students/Delete",
+            data: { id: StudId },
+            success: function (result) {
+                $("#loaderDiv").hide();
+                $("#row_" + StudId).remove();
+                $("#deleteModal").modal('hide');
+            },
+            error: function (xhr, status, error) {
+                alert("En feil oppsto ved sletting - " + error);
+                $("#loaderDiv").hide();
+                $("#deleteModal").modal('hide');
+            }
+        })
+    }
+
+    function SbdSCourse() {
+
+        $("#studentlist").hide();
+        $("#UsersAtcourselist").hide();
+        $("#courselist").show();
+    }
+
+
+
+    function Students() {
+
+        $("#studentlist").show();
+        $("#UsersAtcourselist").hide();
+        $("#courselist").hide();
+    }
+    function StudensAtCourse() {
+
+        $("#studentlist").hide();
+        $("#UsersAtcourselist").show();
+        $("#courselist").hide();
+
+    }
+
+</script>
    
